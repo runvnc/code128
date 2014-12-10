@@ -5,12 +5,18 @@ maxBlocksAtOnce = 4
 blockDisplayTimeMS = 300
 
 class Code128Overlay
-  constructor: (@div, @value) ->
+  constructor: (options) ->
+    @div = options.targetDiv
+    @value = options.value
     @calcCode()
     @init()
     @run()
-  
-  init:
+
+  calcCode: ->
+    barcode = new Code123C(@value) 
+    @blocks = barcode.trueFalse() 
+
+  init: ->
     @startBlock = 0
     @canvas = document.createElement 'canvas'
     @div = document.getElementById id
