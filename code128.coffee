@@ -3,6 +3,9 @@
 # supposed to be part of the test and I don't want to cheat 
 # so I will do it from scratch
 
+# lol after typing all of these in realized
+# only needed about 10 of them.. hah
+
 _128Cweights = [
   '212222', '222122','2222221', '121223',
   '121322', '131222', '122213', '122312',
@@ -33,36 +36,57 @@ _128Cweights = [
   '211214', '211232', '2331112', '211133'    
 ]
 
-# odesk project started but odesk team is not set up yet
-# so I am going to finish in screencast
-# will save this as part 1
-
 # This handles Code 128 output only for code set C
 class Code128C
-  constructor: (@digitArray) ->
+  constructor: (@digitStr) ->
     @bits = ''
+    @weights = ''
+    @encode()
+
+  toBitString: (digits) ->
+    bits = ''
+    for i in [0..digits.length-1]
+      if i % 2 is 0 then bit='1' else bit='0'
+      for b in [0..(digits[i]*1)-1]
+        bits += bit
+     bits
 
   start: ->
-    
+    @checkSum += 105
+    _128Cweights[105]
 
   code: ->
-
+    ret = ''
+    for i in [0..@digitStr.length-1]
+      codeForDigit = @digitStr[i]*1 + 16
+      ret += _128Cweights[codeForDigit]
+      @checkSum += codeForDigit*(i+1)
+    ret
 
   check: ->
+    @checkVal = @checkSum % 103
+    _128Cweights[@checkVal]
 
-
-  end: -> 
-
+  end: ->
+    _128Cweights[106]
 
   encode: ->
-    @bits = @start() + @code() + @check() + @end()
+    @checkSum = 0
+    @weights = @start() + @code() + @check() + @end()
+    @bits = @bitString()
 
-  trueFalseArray: ->
+  bitString: ->
+    @toBitString @weights
+
+  trueFalse: ->
     @encode()
     arr = []
     for i in [0..@bits.length-1]
-      if @bits[i] is '0' then arr.push 0 else arr.push 1
-    return arr
-
+      console.log @bits[i]
+      if @bits[i] is '0'
+        arr.push false
+      else
+        arr.push true
+    arr
 
 
