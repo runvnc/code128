@@ -82,4 +82,6 @@
 
   })();
 
+  window.Code128C = Code128C;
+
 }).call(this);
